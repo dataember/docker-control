@@ -16,17 +16,11 @@ import Network.Wai
 import Network.Wai.Handler.Warp
 import Servant
 
+import DB
 
 type ManagementAPI =
     "endpoint" :> Get '[JSON] [Endpoint]
 
-
-data Endpoint = Endpoint
-    { epHost :: T.Text
-    , epPort :: Int
-    } deriving (Eq, Generic, Show)
-
-instance ToJSON Endpoint
 
 endpoints :: [Endpoint]
 endpoints =

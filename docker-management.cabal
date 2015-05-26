@@ -21,12 +21,18 @@ executable docker-control
 
   other-modules:
     API
+    , DB
 
   -- other-extensions:
   build-depends:
     base >=4.8 && <4.9
     , aeson
     , either
+    , monad-control
+    , monad-logger
+    , persistent
+    , persistent-sqlite
+    , persistent-template
     , servant-server
     , text
     , transformers
