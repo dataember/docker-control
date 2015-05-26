@@ -19,7 +19,9 @@ executable docker-control
   main-is:
     Main.hs
 
-  -- other-modules:
+  other-modules:
+    API
+
   -- other-extensions:
   build-depends:
     base >=4.8 && <4.9

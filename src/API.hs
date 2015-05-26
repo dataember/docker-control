@@ -5,7 +5,7 @@
     , TypeFamilies
     , TypeOperators #-}
 
-module Main where
+module API where
 
 import Control.Monad.Trans.Either
 import Data.Aeson
@@ -16,16 +16,21 @@ import Network.Wai
 import Network.Wai.Handler.Warp
 import Servant
 
-import API
 
-server :: Server ManagementAPI
-server = return endpoints
+type ManagementAPI =
+    "endpoint" :> Get '[JSON] [Endpoint]
 
-managementAPI :: Proxy ManagementAPI
-managementAPI = Proxy
 
-app :: Application
-app = serve managementAPI server
+data Endpoint = Endpoint
+    { epHost :: T.Text
+    , epPort :: Int
+    } deriving (Eq, Generic, Show)
 
-main :: IO ()
-main = run 8081 app
+instance ToJSON Endpoint
+
+endpoints :: [Endpoint]
+endpoints =
+    [ Endpoint "docker" 2456
+    ]
+
+
