@@ -19,13 +19,13 @@ import Network.Wai
 import Network.Wai.Handler.Warp
 import Servant
 
-import API
+import qualified API as API
 import DB
 
-server :: Server ManagementAPI
-server = return endpoints
+server :: Server API.ManagementAPI
+server = API.managementApiServer
 
-managementAPI :: Proxy ManagementAPI
+managementAPI :: Proxy API.ManagementAPI
 managementAPI = Proxy
 
 app :: Application

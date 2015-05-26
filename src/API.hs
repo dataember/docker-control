@@ -18,12 +18,25 @@ import Servant
 
 import DB
 
-type ManagementAPI =
-    "endpoint" :> Get '[JSON] [Endpoint]
+type ManagementAPI = "endpoint" :> Get '[JSON] [Endpoint]
+    :<|> "endpoint" :> ReqBody '[JSON] Endpoint :> Post '[JSON] Endpoint
+    :<|> "endpoint" :> ReqBody '[JSON] Endpoint :> Put '[JSON] Endpoint
 
 
-endpoints :: [Endpoint]
-endpoints =
+managementApiServer :: Server ManagementAPI
+managementApiServer = endpoints
+    :<|> endpointPost
+    :<|> endpointPut
+
+
+endpointPost :: Endpoint -> EitherT ServantErr IO Endpoint
+endpointPost _ = return $ Endpoint "docker" 2222
+
+endpointPut :: Endpoint -> EitherT ServantErr IO Endpoint
+endpointPut _ = return $ Endpoint "docker" 2222
+
+endpoints :: EitherT ServantErr IO [Endpoint]
+endpoints = return
     [ Endpoint "docker" 2456
     ]
 
