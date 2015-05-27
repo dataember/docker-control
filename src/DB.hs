@@ -13,11 +13,21 @@ module DB where
 
 import Control.Exception
 import Control.Monad.IO.Class  (liftIO)
+import Control.Monad.Logger (runStdoutLoggingT)
+import Control.Monad.Reader
 import Control.Monad.Trans.Control
+import Data.Default
 import Database.Persist
 import Database.Persist.Sqlite
 import Database.Persist.TH
 import qualified Data.Text as T
+
+
+type DBConfig a = Reader PoolConfig a
+
+data PoolConfig = PoolConfig
+    { pool :: IO ConnectionPool
+    }
 
 
 share [mkPersist sqlSettings, mkMigrate "migrateAll"] [persistLowerCase|
@@ -54,3 +64,16 @@ doesEndpointExist pool ep =  do
         case maybeEndpoint of
             Just _  -> return True
             Nothing -> return False
+
+
+listAllEndpoints :: ConnectionPool -> IO (Either String [Endpoint])
+listAllEndpoints pool = do
+    endpoints <- trySelect
+    case endpoints of
+        Right eps -> return $ Right $ fmap (entityVal) eps
+        Left ex   -> return $ Left ("An exception of " ++ show ex ++ " occured.")
+  where
+    trySelect :: IO (Either PersistentSqlException [Entity Endpoint])
+    trySelect = try $ runSql pool $ selectList ([] :: [Filter Endpoint]) []
+
+

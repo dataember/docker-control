@@ -8,6 +8,7 @@
 module Main where
 
 import Control.Monad.Logger (runNoLoggingT, runStdoutLoggingT)
+import Control.Monad.Reader
 import Control.Monad.Trans.Either
 import Data.Aeson
 import Data.List
@@ -22,17 +23,22 @@ import Servant
 import qualified API as API
 import DB
 
-server :: Server API.ManagementAPI
-server = API.managementApiServer
 
-managementAPI :: Proxy API.ManagementAPI
+server :: PoolConfig -> Server API.DockerControlAPI
+server = API.dockerControlApiServer
+
+
+managementAPI :: Proxy API.DockerControlAPI
 managementAPI = Proxy
 
-app :: Application
-app = serve managementAPI server
+
+app :: PoolConfig -> Application
+app poolConfig = serve managementAPI (server poolConfig)
+
 
 main :: IO ()
 main = do
     connPool <- runStdoutLoggingT $ createSqlitePool ":memory:" 5
+    let poolConfig = PoolConfig { pool = return connPool }
     runSql connPool $ runMigration migrateAll
-    run 8081 app
+    run 8081 (app poolConfig)

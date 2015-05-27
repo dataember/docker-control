@@ -27,9 +27,11 @@ executable docker-control
   build-depends:
     base >=4.8 && <4.9
     , aeson
+    , data-default
     , either
     , monad-control
     , monad-logger
+    , mtl
     , persistent
     , persistent-sqlite
     , persistent-template
