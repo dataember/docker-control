@@ -18,7 +18,8 @@ import Control.Monad.Reader
 import Control.Monad.Trans.Control
 import Data.Default
 import Database.Persist
-import Database.Persist.Sqlite
+--import Database.Persist.Sqlite
+import Database.Persist.Postgresql
 import Database.Persist.TH
 import qualified Data.Text as T
 
