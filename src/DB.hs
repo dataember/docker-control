@@ -66,6 +66,10 @@ doesEndpointExist pool ep =  do
             Nothing -> return False
 
 
+getEndpointByKey :: ConnectionPool -> Int -> IO (Maybe Endpoint)
+getEndpointByKey connPool i = runSql connPool $ get $ toSqlKey (fromIntegral i)
+
+
 listAllEndpoints :: ConnectionPool -> IO (Either String [Endpoint])
 listAllEndpoints pool = do
     endpoints <- trySelect

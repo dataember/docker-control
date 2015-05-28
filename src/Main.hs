@@ -38,7 +38,7 @@ app poolConfig = serve managementAPI (server poolConfig)
 
 main :: IO ()
 main = do
-    connPool <- runStdoutLoggingT $ createSqlitePool ":memory:" 5
+    connPool <- runStdoutLoggingT $ createSqlitePool "test.sqlite" 5
     let poolConfig = PoolConfig { pool = return connPool }
     runSql connPool $ runMigration migrateAll
     run 8081 (app poolConfig)

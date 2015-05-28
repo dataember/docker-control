@@ -43,3 +43,4 @@ executable docker-control
 
   hs-source-dirs:      src
   default-language:    Haskell2010
+  ghc-options: -rtsopts  -O3 -threaded
