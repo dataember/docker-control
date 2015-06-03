@@ -18,6 +18,7 @@ import Database.Persist
 import Database.Persist.Postgresql
 import qualified Data.Text as T
 import GHC.Generics
+import qualified Network.HTTP.Conduit as HC
 import Network.Wai
 import Network.Wai.Handler.Warp
 import Servant
@@ -26,7 +27,7 @@ import qualified API as API
 import DB
 
 
-server :: PoolConfig -> Server API.DockerControlAPI
+server :: HC.Manager -> ConnectionPool -> Server API.DockerControlAPI
 server = API.dockerControlApiServer
 
 
@@ -34,8 +35,8 @@ managementAPI :: Proxy API.DockerControlAPI
 managementAPI = Proxy
 
 
-app :: PoolConfig -> Application
-app poolConfig = serve managementAPI (server poolConfig)
+app :: HC.Manager -> ConnectionPool -> Application
+app manager dcConfig = serve managementAPI (server manager dcConfig)
 
 
 data PsqlConnDetails = PsqlConnDetails
@@ -64,7 +65,7 @@ instance Default PsqlConnDetails where
 main :: IO ()
 main =
     let connStr = BS.pack $ show (def::PsqlConnDetails)
-    in runStdoutLoggingT $ withPostgresqlPool connStr 10 $ \pool -> do
-        runSql pool $ runMigration migrateAll
-        liftIO $ run 8081 (app $ PoolConfig { pool = return pool })
+    in  HC.withManager $ \manager -> runStdoutLoggingT $ withPostgresqlPool connStr 10 $ \pool -> do
+            runSql pool $ runMigration migrateAll
+            liftIO $ run 8081 (app manager pool)
 

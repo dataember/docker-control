@@ -31,6 +31,7 @@ data PoolConfig = PoolConfig
     }
 
 
+
 share [mkPersist sqlSettings, mkMigrate "migrateAll"] [persistLowerCase|
 Endpoint json
     hostname T.Text

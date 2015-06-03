@@ -28,8 +28,13 @@ executable docker-control
     base >=4.8 && <4.9
     , aeson
     , bytestring
+    , conduit
+    , conduit-extra
     , data-default
+    , docker-client
     , either
+    , http-conduit
+
     , monad-control
     , monad-logger
     , mtl
@@ -38,9 +43,11 @@ executable docker-control
     , persistent-sqlite
     , persistent-template
     , resource-pool
+    , resourcet
     , servant-server
     , text
     , transformers
+    , url
     , wai
     , warp
 
